@@ -1,11 +1,16 @@
 import pandas as pd
 
-pbp = pd.read_parquet("pbp_2024.parquet")
-# If you only saved CSV: pbp = pd.read_csv("pbp_2024.csv")
+# URLs to the last three years (2022, 2023, 2024)
+urls = [
+    "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2023.parquet",
+    "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2024.parquet",
+    "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2025.parquet"
+]
 
-fourth = pbp[pbp["down"] == 4].copy()
-print(fourth.head())
-print("rows:", len(fourth))
-print(fourth["play_type"].value_counts())
+# Load and concatenate into one DataFrame
+pbp = pd.concat([pd.read_parquet(url) for url in urls], ignore_index=True)
 
+print("Rows:", len(pbp))
+print("Seasons:", pbp['season'].unique())
+print(pbp.head())
 

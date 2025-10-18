@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 # URLs to the last three years (2022, 2023, 2024)
 urls = [
     "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2023.parquet",
@@ -76,7 +77,7 @@ def calculate_epa(play):
     team_ep = epa_from_conversion(yl)
     opp_ep  = opp_team_epa(dft, yl)
 
-    epa_of_play = (conversion_rate_yds_to_go * team_ep) - opp_ep
+    epa_of_play = (conversion_rate_yds_to_go * team_ep) - (1-conversion_rate_yds_to_go)*opp_ep
     return epa_of_play
 
 # Iterate through all 4th-down plays for the chosen team
@@ -86,7 +87,7 @@ teams_fourth_plays["calc_epa"] = teams_fourth_plays.apply(calculate_epa, axis=1)
 # Identify plays where the math says "go for it" but they didn't
 should_have_gone = teams_fourth_plays[
     (teams_fourth_plays["calc_epa"] > 0) &
-    (teams_fourth_plays["play_type"].isin(["punt", "field_goal"]))
+    (teams_fourth_plays["play_type"].isin(["punt"]))
 ]
 
 # Print the summary
